@@ -25,7 +25,12 @@ jobs:
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
     - name: Run Snyk Code Test
-      run: snyk code test --severity-threshold=high
+      uses: snyk/actions/python@master   
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: code test
+      continue-on-error: false
 
     - name: Run Snyk Dependency Test
       run: snyk test --severity-threshold=high
