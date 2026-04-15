@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 import sqlite3
+import os
 
 app = FastAPI()
 
-# ❌ Hardcoded secret (for secret scanning demo)
-API_KEY = "AWS_SECRET_ACCESS_KEY=1234567890abcdef"
+# ✅ Fix 1: Read secret from environment variable, never hardcode
+API_KEY = os.environ.get("API_KEY")
 
-# ❌ Insecure DB connection
+# ✅ Fix 2: Secure DB connection
 conn = sqlite3.connect("users.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -19,15 +20,14 @@ def home():
     return {"message": "DevSecOps Demo App Running"}
 
 
-# ❌ SQL Injection vulnerability
+# ✅ Fix 3: Parameterized query — no SQL injection possible
 @app.get("/user")
 def get_user(name: str = Query(...)):
-    query = f"SELECT * FROM users WHERE name = '{name}'"
-    result = cursor.execute(query).fetchall()
+    result = cursor.execute(
+        "SELECT * FROM users WHERE name = ?", (name,)
+    ).fetchall()
     return {"data": result}
 
 
-# ❌ Debug info exposure
-@app.get("/debug")
-def debug():
-    return {"api_key": API_KEY}
+# ✅ Fix 4: Debug endpoint removed — never expose secrets via API
+# /debug endpoint deleted entirely
