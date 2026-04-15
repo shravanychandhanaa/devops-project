@@ -42,7 +42,7 @@ jobs:
       run: docker build -t devsecops-demo ./app
 
     - name: Run Trivy Scan
-      uses: aquasecurity/trivy-action@0.28.0
+      uses: aquasecurity/trivy-action@master
       with:
         image-ref: devsecops-demo
         format: table
