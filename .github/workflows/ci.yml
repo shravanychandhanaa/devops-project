@@ -39,7 +39,7 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Build Docker Image
-      run: docker build -t devsecops-demo ./app
+      run: docker build -t devsecops-demo .
 
     - name: Run Trivy Scan
       uses: aquasecurity/trivy-action@master
